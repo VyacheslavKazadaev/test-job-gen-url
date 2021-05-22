@@ -1,4 +1,4 @@
-version: '3.4'
+version: '2'
 services:
   php:
     image: yiisoftware/yii2-php:7.4-apache
@@ -7,10 +7,26 @@ services:
       - ./:/app:delegated
     ports:
       - '8000:80'
+    links:
+      - mariadb
+      - mariadb_test
   mariadb:
     image: mariadb:10.5
     ports:
       - "3307:3306"
+    volumes:
+      - ./docker/mysql:/etc/mysql/conf.d
+    # задаем пароль для root пользователя
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_USER: userdb
+      MYSQL_PASSWORD: userpass
+      MYSQL_DATABASE: genurldb
+      TZ: Europe/Moscow
+  mariadb_test:
+    image: mariadb:10.5
+    ports:
+      - "3308:3306"
     volumes:
       - ./docker/mysql:/etc/mysql/conf.d
     # задаем пароль для root пользователя
